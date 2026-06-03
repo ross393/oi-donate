@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support Open Invitational — Open Universe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #000000;
+    --soft-black: #111111;
+    --muted-gray: #555555;
+    --border-light: #D0D0D0;
+    --border-very-light: #E8E8E8;
+    --bg: #FFFFFF;
+    --white: #FFFFFF;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 1200px; margin: 0 auto;
+    padding: 96px 40px 72px;
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted-gray); margin-bottom: 24px;
+  }
+  .hero-headline {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(42px, 5vw, 62px);
+    line-height: 1.0; font-weight: 600;
+    letter-spacing: -0.03em; color: var(--black);
+    max-width: 860px; margin-bottom: 24px;
+  }
+  .hero-body {
+    font-size: 19px; line-height: 1.55; font-weight: 400;
+    color: #1A1A1A; max-width: 640px;
+  }
+
+  /* ── MAIN GRID ── */
+  .main-grid {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 40px 96px;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted-gray);
+    margin-bottom: 16px;
+  }
+
+  /* ── AMOUNT BUTTONS ── */
+  .amount-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 10px;
+  }
+  .amount-btn {
+    height: 56px; border-radius: 6px;
+    border: 1.5px solid #D0D0D0;
+    background: var(--white); color: #1A1A1A;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .amount-btn:hover { border-color: var(--black); }
+  .amount-btn.selected {
+    border-color: var(--black); background: var(--black); color: var(--white);
+  }
+
+  .custom-row { margin-bottom: 28px; }
+  .custom-btn {
+    width: 100%; height: 52px; border-radius: 6px;
+    border: 1.5px solid #D0D0D0;
+    background: var(--white); color: var(--muted-gray);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .custom-btn:hover, .custom-btn.selected { border-color: var(--black); color: var(--black); }
+
+  .custom-input-wrap {
+    position: relative; margin-top: 10px; display: none;
+  }
+  .custom-input-wrap.visible { display: block; }
+  .currency-symbol {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; font-weight: 600; color: #1A1A1A; pointer-events: none;
+  }
+  .custom-input {
+    width: 100%; height: 56px; border-radius: 6px;
+    border: 1.5px solid #D0D0D0; background: var(--white); color: #1A1A1A;
+    font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 600;
+    padding: 0 18px 0 36px; outline: none;
+    transition: border-color 0.15s;
+    -moz-appearance: textfield;
+  }
+  .custom-input::-webkit-outer-spin-button,
+  .custom-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .custom-input:focus { border-color: var(--black); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none; border-top: 1px solid var(--border-very-light);
+    margin: 28px 0;
+  }
+
+  /* ── FORM FIELDS ── */
+  .form-row { margin-bottom: 14px; }
+  .form-label {
+    display: block; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted-gray); margin-bottom: 7px;
+  }
+  .form-input {
+    width: 100%; height: 52px; border-radius: 6px;
+    border: 1.5px solid #D0D0D0; background: var(--white); color: #1A1A1A;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400;
+    padding: 0 16px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--black); }
+  .form-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+
+  /* ── STRIPE CARD FIELD ── */
+  .stripe-field {
+    width: 100%; min-height: 52px; border-radius: 6px;
+    border: 1.5px solid #D0D0D0; background: var(--white);
+    padding: 14px 16px;
+    transition: border-color 0.15s;
+  }
+  .stripe-field.focused { border-color: var(--black); }
+
+  .card-error {
+    font-size: 13px; color: #C0392B; margin-top: 8px; min-height: 18px;
+  }
+
+  /* ── PAY BUTTON ── */
+  .pay-btn {
+    width: 100%; height: 60px; border-radius: 6px;
+    border: none; background: var(--black); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+    cursor: pointer; margin-top: 20px;
+    transition: background 0.2s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .pay-btn:hover:not(:disabled) { background: #222222; }
+  .pay-btn:active:not(:disabled) { transform: scale(0.99); }
+  .pay-btn:disabled { background: #BBBBBB; cursor: not-allowed; }
+
+  .secure-note {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; margin-top: 14px;
+    font-size: 12px; color: #999999; letter-spacing: 0.02em;
+  }
+
+  /* ── SUCCESS ── */
+  .success-panel {
+    display: none; text-align: center; padding: 56px 32px;
+  }
+  .success-panel.visible { display: block; }
+  .success-mark {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--black); color: var(--white);
+    font-size: 24px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+  }
+  .success-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 600; margin-bottom: 14px; line-height: 1.1;
+  }
+  .success-body { font-size: 16px; color: var(--muted-gray); line-height: 1.6; }
+
+  /* ── RIGHT: IMPACT ── */
+  .impact-col { padding-top: 4px; }
+
+  .impact-summary {
+    background: #F5F5F5; border-radius: 10px; padding: 28px; margin-bottom: 36px;
+  }
+  .impact-summary-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted-gray); margin-bottom: 8px;
+  }
+  .impact-summary-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px; font-weight: 600; line-height: 1;
+    color: var(--black); letter-spacing: -0.03em;
+    transition: all 0.2s;
+  }
+  .impact-summary-desc {
+    font-size: 14px; color: var(--muted-gray); margin-top: 10px; line-height: 1.5;
+  }
+
+  .impact-heading {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted-gray); margin-bottom: 4px;
+  }
+  .impact-list { list-style: none; }
+  .impact-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 16px 0; border-bottom: 1px solid var(--border-very-light);
+  }
+  .impact-item:first-child { border-top: 1px solid var(--border-very-light); }
+  .impact-emoji { font-size: 20px; flex-shrink: 0; width: 26px; margin-top: 1px; }
+  .impact-title { font-size: 15px; font-weight: 600; color: var(--black); margin-bottom: 3px; }
+  .impact-body { font-size: 14px; line-height: 1.5; color: #555555; }
+
+  /* ── MISSION ── */
+  .mission {
+    background: var(--black); padding: 96px 40px; text-align: center;
+  }
+  .mission-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 52px); font-weight: 600; line-height: 1.0;
+    letter-spacing: -0.03em; color: var(--white);
+    max-width: 800px; margin: 0 auto 24px;
+  }
+  .mission-body {
+    font-size: 18px; line-height: 1.6; color: #CCCCCC;
+    max-width: 680px; margin: 0 auto; font-weight: 300;
+  }
+
+  /* ── FOOTER CTA ── */
+  .footer-cta {
+    max-width: 1200px; margin: 0 auto;
+    padding: 80px 40px 96px; text-align: center;
+  }
+  .footer-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 3vw, 42px); font-weight: 600;
+    letter-spacing: -0.03em; color: var(--black);
+    margin-bottom: 32px; line-height: 1.1;
+  }
+  .footer-btn {
+    display: inline-block; height: 56px; padding: 0 44px;
+    border-radius: 6px; background: var(--black); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    text-decoration: none; line-height: 56px; border: none; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .footer-btn:hover { background: #222222; }
+  .footer-secondary {
+    display: block; margin-top: 18px; font-size: 12px;
+    color: var(--muted-gray); text-decoration: none;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-secondary:hover { color: var(--black); }
+
+  footer {
+    border-top: 1px solid var(--border-very-light);
+    padding: 24px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left {
+    font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--muted-gray);
+  }
+  .footer-right { font-size: 11px; color: #BBBBBB; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  /* ── SPINNER ── */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.7s linear infinite; display: none;
+  }
+  .spinner.visible { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── MOBILE ── */
+  @media (max-width: 960px) {
+    .hero { padding: 64px 24px 56px; }
+    .main-grid { grid-template-columns: 1fr; padding: 0 24px 72px; gap: 48px; }
+    .amount-grid { grid-template-columns: repeat(2, 1fr); }
+    .mission { padding: 72px 24px; }
+    .footer-cta { padding: 64px 24px 80px; }
+    footer { padding: 20px 24px; flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Support Open Invitational</p>
+  <h1 class="hero-headline">Help keep Open Invitational free for artists, studios, and the public.</h1>
+  <p class="hero-body">Your support helps produce exhibitions, support participating studios, expand access, and create a public platform for artists working within progressive art studios.</p>
+</section>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+
+  <!-- LEFT: CHECKOUT -->
+  <div class="checkout-col">
+
+    <div id="checkoutForm">
+      <p class="section-label">Choose your support level</p>
+      <div class="amount-grid">
+        <button class="amount-btn" data-amount="100" onclick="selectAmount(this)">$100</button>
+        <button class="amount-btn" data-amount="250" onclick="selectAmount(this)">$250</button>
+        <button class="amount-btn" data-amount="500" onclick="selectAmount(this)">$500</button>
+        <button class="amount-btn" data-amount="1000" onclick="selectAmount(this)">$1,000</button>
+      </div>
+      <div class="custom-row">
+        <button class="custom-btn" id="customBtn" onclick="selectCustom()">+ Enter a custom amount</button>
+        <div class="custom-input-wrap" id="customInputWrap">
+          <span class="currency-symbol">$</span>
+          <input type="number" class="custom-input" id="customInput" placeholder="0" min="1" oninput="onCustomInput(this)">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <p class="section-label">Your information</p>
+      <div class="form-row-split">
+        <div>
+          <label class="form-label">First name</label>
+          <input class="form-input" type="text" id="firstName" placeholder="Jane" autocomplete="given-name">
+        </div>
+        <div>
+          <label class="form-label">Last name</label>
+          <input class="form-input" type="text" id="lastName" placeholder="Smith" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="email" placeholder="jane@example.com" autocomplete="email">
+      </div>
+
+      <hr class="divider">
+
+      <p class="section-label">Payment details</p>
+      <div class="form-row">
+        <label class="form-label">Card information</label>
+        <div class="stripe-field" id="cardWrapper">
+          <div id="card-element"></div>
+        </div>
+        <div class="card-error" id="cardError"></div>
+      </div>
+
+      <button class="pay-btn" id="payBtn" onclick="handlePayment()" disabled>
+        <span id="btnLabel">Select an amount to continue</span>
+        <span class="spinner" id="btnSpinner"></span>
+      </button>
+
+      <div class="secure-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Secured by Stripe · SSL encrypted
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-panel" id="successPanel">
+      <div class="success-mark">✓</div>
+      <div class="success-headline">Thank you for your support.</div>
+      <div class="success-body">Your contribution helps make Open Invitational possible.<br>A receipt has been sent to your email.</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: IMPACT -->
+  <div class="impact-col">
+    <div class="impact-summary">
+      <div class="impact-summary-label">Your contribution</div>
+      <div class="impact-summary-amount" id="summaryAmount">—</div>
+      <div class="impact-summary-desc">Every contribution helps make the exhibition possible.</div>
+    </div>
+
+    <p class="impact-heading">Your gift helps fund</p>
+    <ul class="impact-list">
+      <li class="impact-item">
+        <div class="impact-emoji">🎨</div>
+        <div>
+          <div class="impact-title">Artist Participation</div>
+          <div class="impact-body">Support the artists and studios who make the exhibition possible.</div>
+        </div>
+      </li>
+      <li class="impact-item">
+        <div class="impact-emoji">💡</div>
+        <div>
+          <div class="impact-title">Exhibition Production</div>
+          <div class="impact-body">Help cover installation, lighting, materials, shipping, and presentation.</div>
+        </div>
+      </li>
+      <li class="impact-item">
+        <div class="impact-emoji">🌐</div>
+        <div>
+          <div class="impact-title">Public Access</div>
+          <div class="impact-body">Keep the exhibition free and open to the public.</div>
+        </div>
+      </li>
+      <li class="impact-item">
+        <div class="impact-emoji">♿</div>
+        <div>
+          <div class="impact-title">Accessibility</div>
+          <div class="impact-body">Support a more welcoming and inclusive art experience.</div>
+        </div>
+      </li>
+      <li class="impact-item">
+        <div class="impact-emoji">🏛️</div>
+        <div>
+          <div class="impact-title">Studio Support</div>
+          <div class="impact-body">Help participating studios bring artists, work, and stories into the public eye.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- MISSION -->
+<section class="mission">
+  <h2 class="mission-headline">The future of art is already here. You're invited.</h2>
+  <p class="mission-body">Open Invitational creates space for artists working within progressive studios to be seen, collected, supported, and understood as part of contemporary art.</p>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="footer-cta">
+  <h2 class="footer-headline">Support the exhibition.<br>Support the artists.</h2>
+  <button class="footer-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">Give Now</button>
+  <a class="footer-secondary" href="mailto:info@theopenuniverse.com">Contact Us About Sponsorship</a>
+</section>
+
+<footer>
+  <div class="footer-left">Open Universe · Open Invitational · Open Studio</div>
+  <div class="footer-right">© 2026 Open Universe</div>
+</footer>
+
+<script>
+  // ── STRIPE INIT ──
+  const stripe = Stripe('pk_live_51TZYSB0R1ivhFbTaKd6mfiJrrsmVKxkA9m19xcWMdGKKhLjvWW3VF8SvicB0FEsraIaTaADj5vLWHnBvVIR5KbFm00X9a5Xery');
+  const elements = stripe.elements({
+    fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap' }]
+  });
+
+  const cardElement = elements.create('card', {
+    style: {
+      base: {
+        fontFamily: '"DM Sans", Helvetica, Arial, sans-serif',
+        fontSize: '15px', fontWeight: '400', color: '#1A1A1A',
+        '::placeholder': { color: '#AAAAAA' }, iconColor: '#555555',
+      },
+      invalid: { color: '#C0392B', iconColor: '#C0392B' }
+    },
+    hidePostalCode: false
+  });
+  cardElement.mount('#card-element');
+  cardElement.on('focus', () => document.getElementById('cardWrapper').classList.add('focused'));
+  cardElement.on('blur',  () => document.getElementById('cardWrapper').classList.remove('focused'));
+  cardElement.on('change', e => {
+    document.getElementById('cardError').textContent = e.error ? e.error.message : '';
+  });
+
+  // ── STATE ──
+  let selectedAmount = null;
+  let customValue = null;
+
+  function selectAmount(btn) {
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('customBtn').classList.remove('selected');
+    document.getElementById('customInputWrap').classList.remove('visible');
+    customValue = null;
+    btn.classList.add('selected');
+    selectedAmount = parseInt(btn.dataset.amount);
+    updateUI();
+  }
+
+  function selectCustom() {
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('customBtn').classList.add('selected');
+    document.getElementById('customInputWrap').classList.add('visible');
+    selectedAmount = 'custom';
+    document.getElementById('customInput').focus();
+    updateUI();
+  }
+
+  function onCustomInput(input) {
+    const v = parseFloat(input.value);
+    customValue = (v && v >= 1) ? v : null;
+    updateUI();
+  }
+
+  function getAmount() {
+    return selectedAmount === 'custom' ? customValue : selectedAmount;
+  }
+
+  function formatAmount(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0 });
+  }
+
+  function updateUI() {
+    const amount = getAmount();
+    const btn = document.getElementById('payBtn');
+    const label = document.getElementById('btnLabel');
+    document.getElementById('summaryAmount').textContent = amount ? formatAmount(amount) : '—';
+    if (!amount) {
+      btn.disabled = true;
+      label.textContent = 'Select an amount to continue';
+    } else {
+      btn.disabled = false;
+      label.textContent = 'Give ' + formatAmount(amount);
+    }
+  }
+
+  // ── PAYMENT ──
+  async function handlePayment() {
+    const amount = getAmount();
+    if (!amount) return;
+
+    const email     = document.getElementById('email').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const name      = [firstName, lastName].filter(Boolean).join(' ');
+
+    if (!email) {
+      document.getElementById('cardError').textContent = 'Please enter your email address.';
+      document.getElementById('email').focus();
+      return;
+    }
+
+    // Loading state
+    const btn     = document.getElementById('payBtn');
+    const label   = document.getElementById('btnLabel');
+    const spinner = document.getElementById('btnSpinner');
+    btn.disabled = true;
+    label.textContent = 'Processing…';
+    spinner.classList.add('visible');
+    document.getElementById('cardError').textContent = '';
+
+    try {
+      // 1. Create Payment Intent via Netlify function
+      const res = await fetch('/.netlify/functions/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Math.round(amount * 100), email, name }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Could not initialize payment.');
+      }
+
+      // 2. Confirm card payment
+      const { error, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: { name, email },
+        }
+      });
+
+      if (error) {
+        document.getElementById('cardError').textContent = error.message;
+        btn.disabled = false;
+        label.textContent = 'Give ' + formatAmount(amount);
+        spinner.classList.remove('visible');
+        return;
+      }
+
+      if (paymentIntent.status === 'succeeded') {
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('successPanel').classList.add('visible');
+      }
+
+    } catch (err) {
+      document.getElementById('cardError').textContent = err.message || 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      label.textContent = 'Give ' + formatAmount(amount);
+      spinner.classList.remove('visible');
+    }
+  }
+</script>
+</body>
+</html>
