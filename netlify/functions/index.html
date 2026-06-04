@@ -29,6 +29,34 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ── IMAGE HERO ── */
+  .img-hero {
+    width: 100%; position: relative; overflow: hidden;
+    padding: 96px 0 80px;
+  }
+  .img-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url('https://images.squarespace-cdn.com/content/670c02791d5fca4861db9d2a/ea72be5a-2523-4880-beaa-214f1960f0cf/196A0938.jpg?content-type=image%2Fjpeg') center 30%/cover no-repeat;
+  }
+  .img-hero::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(0,0,0,0.6);
+  }
+  .img-hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 40px;
+  }
+  .img-hero .hero-eyebrow { color: rgba(255,255,255,0.6) !important; }
+  .img-hero .hero-headline { color: #FFFFFF !important; font-size: clamp(48px, 5.5vw, 72px) !important; font-weight: 700 !important; }
+  .img-hero .hero-body { color: rgba(255,255,255,0.85) !important; font-size: 22px !important; font-weight: 500 !important; max-width: 680px; }
+  @media (max-width: 960px) {
+    .img-hero { padding: 64px 0 56px; }
+    .img-hero-inner { padding: 0 24px; }
+    .img-hero .hero-headline { font-size: clamp(36px, 8vw, 52px) !important; }
+    .img-hero .hero-body { font-size: 18px !important; }
+  }
+
   /* ── HERO ── */
   .hero {
     max-width: 1200px; margin: 0 auto;
@@ -54,21 +82,23 @@
   /* ── MAIN GRID ── */
   .main-grid {
     max-width: 1200px; margin: 0 auto;
-    padding: 0 40px 96px;
+    padding: 64px 40px 96px;
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: 1fr 420px;
     gap: 64px;
     align-items: start;
   }
 
-  /* ── SECTION LABEL ── */
+  /* ── LEFT: AMOUNT + CHECKOUT ── */
+  .checkout-col {}
+
   .section-label {
     font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--muted-gray);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
-  /* ── AMOUNT BUTTONS ── */
+  /* Amount grid */
   .amount-grid {
     display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 10px; margin-bottom: 10px;
@@ -86,108 +116,115 @@
   .amount-btn.selected {
     border-color: var(--black); background: var(--black); color: var(--white);
   }
-
-  .custom-row { margin-bottom: 28px; }
+  .custom-row { margin-bottom: 32px; }
+  .custom-input-wrap {
+    position: relative; margin-top: 10px;
+  }
+  .currency-symbol {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; font-weight: 600; color: #1A1A1A;
+    pointer-events: none;
+  }
+  .custom-input {
+    width: 100%; height: 56px;
+    border-radius: 6px; border: 1.5px solid #D0D0D0;
+    background: var(--white); color: #1A1A1A;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px; font-weight: 600;
+    padding: 0 18px 0 36px;
+    outline: none;
+    transition: border-color 0.15s;
+    display: none;
+  }
+  .custom-input.visible { display: block; }
+  .custom-input:focus { border-color: var(--black); }
   .custom-btn {
-    width: 100%; height: 52px; border-radius: 6px;
+    width: 100%; height: 56px; border-radius: 6px;
     border: 1.5px solid #D0D0D0;
     background: var(--white); color: var(--muted-gray);
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500; letter-spacing: 0.03em;
-    cursor: pointer;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer; letter-spacing: 0.01em;
     transition: border-color 0.15s, color 0.15s;
   }
   .custom-btn:hover, .custom-btn.selected { border-color: var(--black); color: var(--black); }
 
-  .custom-input-wrap {
-    position: relative; margin-top: 10px; display: none;
-  }
-  .custom-input-wrap.visible { display: block; }
-  .currency-symbol {
-    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-    font-size: 18px; font-weight: 600; color: #1A1A1A; pointer-events: none;
-  }
-  .custom-input {
-    width: 100%; height: 56px; border-radius: 6px;
-    border: 1.5px solid #D0D0D0; background: var(--white); color: #1A1A1A;
-    font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 600;
-    padding: 0 18px 0 36px; outline: none;
-    transition: border-color 0.15s;
-    -moz-appearance: textfield;
-  }
-  .custom-input::-webkit-outer-spin-button,
-  .custom-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .custom-input:focus { border-color: var(--black); }
-
-  /* ── DIVIDER ── */
+  /* Divider */
   .divider {
     border: none; border-top: 1px solid var(--border-very-light);
-    margin: 28px 0;
+    margin: 32px 0;
   }
 
-  /* ── FORM FIELDS ── */
+  /* Donor info */
   .form-row { margin-bottom: 14px; }
   .form-label {
-    display: block; font-size: 11px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    display: block; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--muted-gray); margin-bottom: 7px;
   }
   .form-input {
-    width: 100%; height: 52px; border-radius: 6px;
-    border: 1.5px solid #D0D0D0; background: var(--white); color: #1A1A1A;
-    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400;
+    width: 100%; height: 52px;
+    border-radius: 6px; border: 1.5px solid #D0D0D0;
+    background: var(--white); color: #1A1A1A;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 400;
     padding: 0 16px; outline: none;
     transition: border-color 0.15s;
   }
   .form-input:focus { border-color: var(--black); }
-  .form-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .form-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  /* ── STRIPE CARD FIELD ── */
+  /* Stripe Elements container */
   .stripe-field {
-    width: 100%; min-height: 52px; border-radius: 6px;
-    border: 1.5px solid #D0D0D0; background: var(--white);
-    padding: 14px 16px;
+    width: 100%; height: 52px;
+    border-radius: 6px; border: 1.5px solid #D0D0D0;
+    background: var(--white);
+    padding: 0 16px;
+    display: flex; align-items: center;
     transition: border-color 0.15s;
   }
   .stripe-field.focused { border-color: var(--black); }
+  #card-element { width: 100%; }
 
-  .card-error {
-    font-size: 13px; color: #C0392B; margin-top: 8px; min-height: 18px;
-  }
-
-  /* ── PAY BUTTON ── */
+  /* Pay button */
   .pay-btn {
     width: 100%; height: 60px; border-radius: 6px;
     border: none; background: var(--black); color: var(--white);
-    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
-    cursor: pointer; margin-top: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    cursor: pointer; margin-top: 24px;
     transition: background 0.2s, transform 0.1s;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; letter-spacing: 0.01em;
   }
-  .pay-btn:hover:not(:disabled) { background: #222222; }
-  .pay-btn:active:not(:disabled) { transform: scale(0.99); }
-  .pay-btn:disabled { background: #BBBBBB; cursor: not-allowed; }
+  .pay-btn:hover { background: #222222; }
+  .pay-btn:active { transform: scale(0.99); }
+  .pay-btn:disabled { background: #AAAAAA; cursor: not-allowed; transform: none; }
+  .pay-btn .btn-amount { opacity: 0.7; font-weight: 400; }
 
   .secure-note {
     display: flex; align-items: center; justify-content: center;
     gap: 6px; margin-top: 14px;
-    font-size: 12px; color: #999999; letter-spacing: 0.02em;
+    font-size: 12px; color: #999999; letter-spacing: 0.03em;
   }
 
-  /* ── SUCCESS ── */
+  /* Error */
+  .card-error {
+    font-size: 13px; color: #C0392B;
+    margin-top: 10px; min-height: 18px;
+  }
+
+  /* Success state */
   .success-panel {
-    display: none; text-align: center; padding: 56px 32px;
+    display: none; text-align: center; padding: 48px 32px;
+    border: 1.5px solid var(--border-very-light);
+    border-radius: 12px;
   }
   .success-panel.visible { display: block; }
-  .success-mark {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--black); color: var(--white);
-    font-size: 24px; display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 24px;
-  }
+  .success-icon { font-size: 48px; margin-bottom: 20px; }
   .success-headline {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 36px; font-weight: 600; margin-bottom: 14px; line-height: 1.1;
+    font-size: 32px; font-weight: 600; margin-bottom: 12px;
   }
   .success-body { font-size: 16px; color: var(--muted-gray); line-height: 1.6; }
 
@@ -195,25 +232,27 @@
   .impact-col { padding-top: 4px; }
 
   .impact-summary {
-    background: #F5F5F5; border-radius: 10px; padding: 28px; margin-bottom: 36px;
+    background: #F7F7F7;
+    border-radius: 10px; padding: 28px;
+    margin-bottom: 32px;
   }
   .impact-summary-label {
     font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted-gray); margin-bottom: 8px;
+    text-transform: uppercase; color: var(--muted-gray); margin-bottom: 6px;
   }
   .impact-summary-amount {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 56px; font-weight: 600; line-height: 1;
+    font-size: 52px; font-weight: 600; line-height: 1;
     color: var(--black); letter-spacing: -0.03em;
-    transition: all 0.2s;
   }
   .impact-summary-desc {
-    font-size: 14px; color: var(--muted-gray); margin-top: 10px; line-height: 1.5;
+    font-size: 14px; color: var(--muted-gray); margin-top: 8px; line-height: 1.5;
   }
 
   .impact-heading {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted-gray); margin-bottom: 4px;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted-gray);
+    margin-bottom: 20px;
   }
   .impact-list { list-style: none; }
   .impact-item {
@@ -221,17 +260,19 @@
     padding: 16px 0; border-bottom: 1px solid var(--border-very-light);
   }
   .impact-item:first-child { border-top: 1px solid var(--border-very-light); }
-  .impact-emoji { font-size: 20px; flex-shrink: 0; width: 26px; margin-top: 1px; }
+  .impact-emoji { font-size: 20px; margin-top: 1px; flex-shrink: 0; width: 28px; }
   .impact-title { font-size: 15px; font-weight: 600; color: var(--black); margin-bottom: 3px; }
   .impact-body { font-size: 14px; line-height: 1.5; color: #555555; }
 
   /* ── MISSION ── */
   .mission {
-    background: var(--black); padding: 96px 40px; text-align: center;
+    background: var(--black); padding: 96px 40px;
+    text-align: center;
   }
   .mission-headline {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(36px, 4vw, 52px); font-weight: 600; line-height: 1.0;
+    font-size: clamp(36px, 4vw, 52px);
+    font-weight: 600; line-height: 1.0;
     letter-spacing: -0.03em; color: var(--white);
     max-width: 800px; margin: 0 auto 24px;
   }
@@ -260,9 +301,9 @@
   }
   .footer-btn:hover { background: #222222; }
   .footer-secondary {
-    display: block; margin-top: 18px; font-size: 12px;
-    color: var(--muted-gray); text-decoration: none;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    display: block; margin-top: 18px; font-size: 13px;
+    color: var(--muted-gray); text-decoration: none; letter-spacing: 0.04em;
+    text-transform: uppercase;
     transition: color 0.2s;
   }
   .footer-secondary:hover { color: var(--black); }
@@ -273,19 +314,10 @@
     display: flex; justify-content: space-between; align-items: center;
   }
   .footer-left {
-    font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--muted-gray);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; color: var(--muted-gray);
   }
   .footer-right { font-size: 11px; color: #BBBBBB; letter-spacing: 0.05em; text-transform: uppercase; }
-
-  /* ── SPINNER ── */
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.35);
-    border-top-color: #fff; border-radius: 50%;
-    animation: spin 0.7s linear infinite; display: none;
-  }
-  .spinner.visible { display: inline-block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── MOBILE ── */
   @media (max-width: 960px) {
@@ -296,16 +328,30 @@
     .footer-cta { padding: 64px 24px 80px; }
     footer { padding: 20px 24px; flex-direction: column; gap: 10px; text-align: center; }
   }
+
+  /* Loading spinner */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .spinner.visible { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero">
-  <p class="hero-eyebrow">Support Open Invitational</p>
-  <h1 class="hero-headline">Help keep Open Invitational free for artists, studios, and the public.</h1>
-  <p class="hero-body">Your support helps produce exhibitions, support participating studios, expand access, and create a public platform for artists working within progressive art studios.</p>
-</section>
+<!-- IMAGE HERO -->
+<div class="img-hero">
+  <div class="img-hero-inner">
+    <p class="hero-eyebrow">Support Open Invitational</p>
+    <h1 class="hero-headline">Help keep Open Invitational free for artists, studios, and the public.</h1>
+    <p class="hero-body">Your support helps produce exhibitions, support participating studios, expand access, and create a public platform for artists working within progressive art studios.</p>
+  </div>
+</div>
 
 <!-- MAIN GRID -->
 <div class="main-grid">
@@ -313,31 +359,33 @@
   <!-- LEFT: CHECKOUT -->
   <div class="checkout-col">
 
+    <!-- Amount selection -->
+    <p class="section-label">Choose your support level</p>
+    <div class="amount-grid">
+      <button class="amount-btn" data-amount="100" onclick="selectAmount(this)">$100</button>
+      <button class="amount-btn" data-amount="250" onclick="selectAmount(this)">$250</button>
+      <button class="amount-btn" data-amount="500" onclick="selectAmount(this)">$500</button>
+      <button class="amount-btn" data-amount="1000" onclick="selectAmount(this)">$1,000</button>
+    </div>
+    <div class="custom-row">
+      <button class="custom-btn" id="customBtn" onclick="selectCustom()">+ Enter a custom amount</button>
+      <div class="custom-input-wrap">
+        <span class="currency-symbol">$</span>
+        <input type="number" class="custom-input" id="customInput" placeholder="0" min="1" oninput="onCustomInput(this)">
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Checkout form -->
     <div id="checkoutForm">
-      <p class="section-label">Choose your support level</p>
-      <div class="amount-grid">
-        <button class="amount-btn" data-amount="100" onclick="selectAmount(this)">$100</button>
-        <button class="amount-btn" data-amount="250" onclick="selectAmount(this)">$250</button>
-        <button class="amount-btn" data-amount="500" onclick="selectAmount(this)">$500</button>
-        <button class="amount-btn" data-amount="1000" onclick="selectAmount(this)">$1,000</button>
-      </div>
-      <div class="custom-row">
-        <button class="custom-btn" id="customBtn" onclick="selectCustom()">+ Enter a custom amount</button>
-        <div class="custom-input-wrap" id="customInputWrap">
-          <span class="currency-symbol">$</span>
-          <input type="number" class="custom-input" id="customInput" placeholder="0" min="1" oninput="onCustomInput(this)">
-        </div>
-      </div>
-
-      <hr class="divider">
-
       <p class="section-label">Your information</p>
-      <div class="form-row-split">
-        <div>
+      <div class="form-row-split" style="margin-bottom:14px;">
+        <div class="form-row" style="margin:0;">
           <label class="form-label">First name</label>
           <input class="form-input" type="text" id="firstName" placeholder="Jane" autocomplete="given-name">
         </div>
-        <div>
+        <div class="form-row" style="margin:0;">
           <label class="form-label">Last name</label>
           <input class="form-input" type="text" id="lastName" placeholder="Smith" autocomplete="family-name">
         </div>
@@ -362,16 +410,15 @@
         <span id="btnLabel">Select an amount to continue</span>
         <span class="spinner" id="btnSpinner"></span>
       </button>
-
       <div class="secure-note">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Secured by Stripe · SSL encrypted
       </div>
     </div>
 
-    <!-- Success -->
+    <!-- Success state -->
     <div class="success-panel" id="successPanel">
-      <div class="success-mark">✓</div>
+      <div class="success-icon">✦</div>
       <div class="success-headline">Thank you for your support.</div>
       <div class="success-body">Your contribution helps make Open Invitational possible.<br>A receipt has been sent to your email.</div>
     </div>
@@ -380,7 +427,8 @@
 
   <!-- RIGHT: IMPACT -->
   <div class="impact-col">
-    <div class="impact-summary">
+
+    <div class="impact-summary" id="impactSummary">
       <div class="impact-summary-label">Your contribution</div>
       <div class="impact-summary-amount" id="summaryAmount">—</div>
       <div class="impact-summary-desc">Every contribution helps make the exhibition possible.</div>
@@ -424,8 +472,8 @@
         </div>
       </li>
     </ul>
-  </div>
 
+  </div>
 </div>
 
 <!-- MISSION -->
@@ -457,14 +505,18 @@
     style: {
       base: {
         fontFamily: '"DM Sans", Helvetica, Arial, sans-serif',
-        fontSize: '15px', fontWeight: '400', color: '#1A1A1A',
-        '::placeholder': { color: '#AAAAAA' }, iconColor: '#555555',
+        fontSize: '15px',
+        fontWeight: '400',
+        color: '#1A1A1A',
+        '::placeholder': { color: '#AAAAAA' },
+        iconColor: '#555555',
       },
       invalid: { color: '#C0392B', iconColor: '#C0392B' }
     },
     hidePostalCode: false
   });
   cardElement.mount('#card-element');
+
   cardElement.on('focus', () => document.getElementById('cardWrapper').classList.add('focused'));
   cardElement.on('blur',  () => document.getElementById('cardWrapper').classList.remove('focused'));
   cardElement.on('change', e => {
@@ -478,8 +530,9 @@
   function selectAmount(btn) {
     document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('customBtn').classList.remove('selected');
-    document.getElementById('customInputWrap').classList.remove('visible');
+    document.getElementById('customInput').classList.remove('visible');
     customValue = null;
+
     btn.classList.add('selected');
     selectedAmount = parseInt(btn.dataset.amount);
     updateUI();
@@ -488,7 +541,7 @@
   function selectCustom() {
     document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('customBtn').classList.add('selected');
-    document.getElementById('customInputWrap').classList.add('visible');
+    document.getElementById('customInput').classList.add('visible');
     selectedAmount = 'custom';
     document.getElementById('customInput').focus();
     updateUI();
@@ -505,6 +558,7 @@
   }
 
   function formatAmount(n) {
+    if (!n) return '—';
     return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0 });
   }
 
@@ -512,25 +566,41 @@
     const amount = getAmount();
     const btn = document.getElementById('payBtn');
     const label = document.getElementById('btnLabel');
-    document.getElementById('summaryAmount').textContent = amount ? formatAmount(amount) : '—';
+    const summary = document.getElementById('summaryAmount');
+
+    summary.textContent = amount ? formatAmount(amount) : '—';
+
     if (!amount) {
       btn.disabled = true;
       label.textContent = 'Select an amount to continue';
     } else {
       btn.disabled = false;
-      label.textContent = 'Give ' + formatAmount(amount);
+      label.textContent = `Give ${formatAmount(amount)}`;
     }
   }
 
   // ── PAYMENT ──
+  // NOTE: For production, Payment Intent creation must happen server-side.
+  // This implementation uses your existing Stripe Payment Links as fallback
+  // for preset amounts, and a server endpoint for custom.
+  // When you have a backend (Netlify/Vercel function), replace the
+  // createPaymentIntent call below with your endpoint URL.
+
+  const STRIPE_LINKS = {
+    100:    'https://buy.stripe.com/aFa3cn57E1OegpteKu7ss06',
+    250:    'https://buy.stripe.com/4gMeV557EcsSgpt31M7ss07',
+    500:    'https://buy.stripe.com/00weV5arYcsS4GL31M7ss08',
+    1000:   'https://buy.stripe.com/7sYfZ9arYakK5KPdGq7ss09',
+    custom: 'https://buy.stripe.com/6oU9ALbw2csSb597i27ss0a'
+  };
+
   async function handlePayment() {
     const amount = getAmount();
     if (!amount) return;
 
-    const email     = document.getElementById('email').value.trim();
     const firstName = document.getElementById('firstName').value.trim();
     const lastName  = document.getElementById('lastName').value.trim();
-    const name      = [firstName, lastName].filter(Boolean).join(' ');
+    const email     = document.getElementById('email').value.trim();
 
     if (!email) {
       document.getElementById('cardError').textContent = 'Please enter your email address.';
@@ -538,56 +608,32 @@
       return;
     }
 
-    // Loading state
-    const btn     = document.getElementById('payBtn');
-    const label   = document.getElementById('btnLabel');
+    // Set loading state
+    const btn = document.getElementById('payBtn');
+    const label = document.getElementById('btnLabel');
     const spinner = document.getElementById('btnSpinner');
     btn.disabled = true;
     label.textContent = 'Processing…';
     spinner.classList.add('visible');
     document.getElementById('cardError').textContent = '';
 
-    try {
-      // 1. Create Payment Intent via Netlify function
-      const res = await fetch('/.netlify/functions/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: Math.round(amount * 100), email, name }),
-      });
+    // For preset amounts: use Payment Links (redirect)
+    // For custom: use Payment Link with prefilled amount
+    // When you add a backend, replace this whole block with a fetch to your endpoint
 
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        throw new Error(data.error || 'Could not initialize payment.');
-      }
-
-      // 2. Confirm card payment
-      const { error, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: { name, email },
-        }
-      });
-
-      if (error) {
-        document.getElementById('cardError').textContent = error.message;
-        btn.disabled = false;
-        label.textContent = 'Give ' + formatAmount(amount);
-        spinner.classList.remove('visible');
-        return;
-      }
-
-      if (paymentIntent.status === 'succeeded') {
-        document.getElementById('checkoutForm').style.display = 'none';
-        document.getElementById('successPanel').classList.add('visible');
-      }
-
-    } catch (err) {
-      document.getElementById('cardError').textContent = err.message || 'Something went wrong. Please try again.';
-      btn.disabled = false;
-      label.textContent = 'Give ' + formatAmount(amount);
-      spinner.classList.remove('visible');
+    if (selectedAmount !== 'custom') {
+      // Redirect to preset Payment Link
+      window.location.href = STRIPE_LINKS[selectedAmount];
+      return;
     }
+
+    // Custom amount: redirect with prefilled_amount in cents
+    const cents = Math.round(customValue * 100);
+    window.location.href = STRIPE_LINKS.custom + '?prefilled_amount=' + cents;
+  }
+
+  function scrollToCard() {
+    document.querySelector('.checkout-col').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 </script>
 </body>
