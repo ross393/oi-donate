@@ -36,7 +36,7 @@
   }
   .img-hero::before {
     content: ''; position: absolute; inset: 0;
-    background: url('https://images.squarespace-cdn.com/content/670c02791d5fca4861db9d2a/ea72be5a-2523-4880-beaa-214f1960f0cf/196A0938.jpg?content-type=image%2Fjpeg') center 30%/cover no-repeat;
+    background: url('https://raw.githubusercontent.com/ross393/oi-donate/main/196A0938.webp') center 30%/cover no-repeat;
   }
   .img-hero::after {
     content: ''; position: absolute; inset: 0;
@@ -608,7 +608,6 @@
       return;
     }
 
-    // Set loading state
     const btn = document.getElementById('payBtn');
     const label = document.getElementById('btnLabel');
     const spinner = document.getElementById('btnSpinner');
@@ -617,19 +616,49 @@
     spinner.classList.add('visible');
     document.getElementById('cardError').textContent = '';
 
-    // For preset amounts: use Payment Links (redirect)
-    // For custom: use Payment Link with prefilled amount
-    // When you add a backend, replace this whole block with a fetch to your endpoint
+    // All amounts → Netlify function + Stripe Elements card form
+    try {
+      const cents = Math.round(amount * 100);
+      const res = await fetch('/.netlify/functions/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: cents,
+          email: email,
+          name: (firstName + ' ' + lastName).trim()
+        })
+      });
 
-    if (selectedAmount !== 'custom') {
-      // Redirect to preset Payment Link
-      window.location.href = STRIPE_LINKS[selectedAmount];
-      return;
+      const data = await res.json();
+      if (!res.ok || !data.clientSecret) {
+        throw new Error(data.error || 'Could not create payment.');
+      }
+
+      const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: (firstName + ' ' + lastName).trim(),
+            email: email
+          }
+        }
+      });
+
+      if (result.error) {
+        document.getElementById('cardError').textContent = result.error.message;
+        btn.disabled = false;
+        label.textContent = `Give ${formatAmount(amount)}`;
+        spinner.classList.remove('visible');
+      } else {
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('successPanel').classList.add('visible');
+      }
+    } catch (err) {
+      document.getElementById('cardError').textContent = err.message;
+      btn.disabled = false;
+      label.textContent = `Give ${formatAmount(amount)}`;
+      spinner.classList.remove('visible');
     }
-
-    // Custom amount: redirect with prefilled_amount in cents
-    const cents = Math.round(customValue * 100);
-    window.location.href = STRIPE_LINKS.custom + '?prefilled_amount=' + cents;
   }
 
   function scrollToCard() {
