@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 exports.handler = async function(event, context) {
   const CHANNEL_ID = 'UCvFDqxl31fIfw0D7K_uvNhQ';
   const API_KEY = 'AIzaSyBHiM3-zdXfIGx-tHBtrsgnz4jWjuIg5jk';
