@@ -1,6 +1,6 @@
 exports.handler = async function(event, context) {
   const CHANNEL_ID = 'UCvFDqxl31fIfw0D7K_uvNhQ';
-  const API_KEY = 'AIzaSyBHiM3-zdXfIGx-tHBtrsgnz4jWjuIg5jk';
+  const API_KEY = process.env.YOUTUBE_API_KEY;
   
   const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
   
