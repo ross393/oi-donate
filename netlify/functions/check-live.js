@@ -1,5 +1,5 @@
 exports.handler = async function(event, context) {
-  const API_KEY = process.env.YOUTUBE_API_KEY;
+  const API_KEY = process.env.YOUTUBE_API_KEY || 'AIzaSyBHiM3-zdXfIGx-tHBtrsgnz4jWjuIg5jk';
   
   const CHANNELS = [
     { id: 'UCnM6YVQIM0thPvHqzMkZdWw', label: 'Open Invitational Basel · Floor 1' },
@@ -20,7 +20,6 @@ exports.handler = async function(event, context) {
         return { label: ch.label, live: !!videoId, videoId };
       })
     );
-
     return {
       statusCode: 200,
       headers: {
