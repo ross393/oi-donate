@@ -17,7 +17,7 @@ exports.handler = async function(event, context) {
         const videoId = data.items && data.items.length > 0
           ? data.items[0].id.videoId
           : null;
-        return { label: ch.label, live: !!videoId, videoId };
+        return { label: ch.label, live: !!videoId, videoId, debug: data.error || null };
       })
     );
 
@@ -27,12 +27,12 @@ exports.handler = async function(event, context) {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ streams: results })
+      body: JSON.stringify({ streams: results, hasKey: !!API_KEY })
     };
   } catch(e) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ streams: [], error: e.message, apiKey: !!API_KEY })
+      body: JSON.stringify({ streams: [], error: e.message })
     };
   }
 };
