@@ -420,7 +420,7 @@
     <div class="success-panel" id="successPanel">
       <div class="success-icon">✦</div>
       <div class="success-headline">Thank you for your support.</div>
-      <div class="success-body">Your contribution helps make Open Invitational possible.<br>A receipt has been sent to your email.</div>
+      <div class="success-body">Your contribution helps make Open Invitational possible.<br>A receipt for your tax records is on its way to your email.</div>
     </div>
 
   </div>
@@ -616,10 +616,10 @@
     spinner.classList.add('visible');
     document.getElementById('cardError').textContent = '';
 
-    // All amounts → Netlify function + Stripe Elements card form
+    // All amounts → serverless function (/api) + Stripe Elements card form
     try {
       const cents = Math.round(amount * 100);
-      const res = await fetch('/.netlify/functions/create-payment-intent', {
+      const res = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
